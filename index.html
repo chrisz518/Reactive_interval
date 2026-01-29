@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reactive 21s Interval Timer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 40px;
+    }
+    button {
+      font-size: 20px;
+      padding: 12px 24px;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Reactive 21-Second Interval</h2>
+  <button onclick="startInterval()">Start Interval</button>
+  <div id="status">Idle</div>
+
+  <script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function beep(duration = 150, frequency = 800) {
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency;
+      gainNode.gain.value = 0.3;
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      oscillator.start();
+      setTimeout(() => oscillator.stop(), duration);
+    }
+
+    function randomBetween(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function startInterval() {
+      document.getElementById("status").innerText = "Get Ready…";
+
+      const preDelay = randomBetween(3, 6) * 1000;
+
+      setTimeout(() => {
+        // T = 0 START
+        beep();
+        document.getElementById("status").innerText = "GO (T = 0)";
+
+        const t2 = randomBetween(5, 9) * 1000;
+        const t3 = randomBetween(12, 16) * 1000;
+
+        setTimeout(() => {
+          beep(150, 1000);
+          document.getElementById("status").innerText = "CHANGE DIRECTION";
+        }, t2);
+
+        setTimeout(() => {
+          beep(150, 1000);
+          document.getElementById("status").innerText = "CHANGE DIRECTION";
+        }, t3);
+
+        setTimeout(() => {
+          beep(300, 600);
+          document.getElementById("status").innerText = "STOP (T = 21)";
+        }, 21000);
+
+      }, preDelay);
+    }
+  </script>
+
+</body>
+</html>
